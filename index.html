@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#09090f">
+<title>Delta AI</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #09090f;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    min-height: 100vh;
+}
+
+header {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #20202c;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 900;
+    color: #a66cff;
+}
+
+.badge {
+    background: #211536;
+    color: #bc91ff;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+main {
+    max-width: 650px;
+    margin: auto;
+    padding: 25px 18px;
+}
+
+.hero {
+    text-align: center;
+    padding: 35px 10px;
+}
+
+.hero h1 {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.hero span {
+    color: #a66cff;
+}
+
+.hero p {
+    color: #9999aa;
+    line-height: 1.6;
+}
+
+.card {
+    background: #12121c;
+    border: 1px solid #272738;
+    border-radius: 17px;
+    padding: 21px;
+    margin-bottom: 17px;
+}
+
+.card h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.online {
+    color: #69e6a0;
+    font-size: 13px;
+}
+
+.description {
+    color: #9999aa;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 11px;
+    background: #9455ef;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:active {
+    opacity: 0.75;
+}
+
+input {
+    width: 100%;
+    background: #09090f;
+    border: 1px solid #343447;
+    border-radius: 10px;
+    padding: 14px;
+    color: white;
+    margin-top: 12px;
+    outline: none;
+}
+
+.chat {
+    min-height: 65px;
+    padding: 12px;
+    background: #09090f;
+    border-radius: 10px;
+    margin-top: 12px;
+    color: #c5c5d5;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+footer {
+    text-align: center;
+    color: #666678;
+    padding: 30px;
+    font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">DELTA AI</div>
+    <div class="badge">KEYLESS EXPERIENCE</div>
+</header>
+
+<main>
+
+<section class="hero">
+    <h1>Welcome to <span>Delta AI</span></h1>
+    <p>Your Roblox compatibility assistant.<br>
+    Smarter monitoring. Easier updates. One dashboard.</p>
+</section>
+
+<section class="card">
+    <div class="status">
+        <h2>Roblox Status</h2>
+        <span class="online" id="robloxStatus">Checking...</span>
+    </div>
+    <p class="description">
+        Check Roblox availability and monitor service status.
+    </p>
+    <button onclick="checkRoblox()">Check Roblox Status</button>
+</section>
+
+<section class="card">
+    <h2>Automatic Update Monitor</h2>
+    <p class="description">
+        Delta AI can monitor Roblox version changes and notify you
+        when a new compatibility check is needed.
+    </p>
+    <div class="chat" id="updateStatus">
+        Update monitor is ready.
+    </div>
+    <button onclick="checkUpdates()">Check for Updates</button>
+</section>
+
+<section class="card">
+    <h2>Delta AI Assistant 🤖</h2>
+    <p class="description">
+        Ask the assistant about Roblox updates and Delta AI features.
+    </p>
+
+    <div class="chat" id="chat">
+        Hello! I'm Delta AI. How can I help?
+    </div>
+
+    <input id="question" placeholder="Ask Delta AI something...">
+
+    <button onclick="askAI()">Send Message</button>
+</section>
+
+<section class="card">
+    <h2>Application Information</h2>
+    <p class="description">
+        Application: Delta AI<br>
+        Version: 1.0.0<br>
+        Platform: iPhone / Web<br>
+        Access: Keyless<br>
+        Update monitoring: Enabled
+    </p>
+</section>
+
+</main>
+
+<footer>
+    DELTA AI © 2026<br>
+    Independent community project.
+    Not affiliated with Roblox or Delta Executor.
+</footer>
+
+<script>
+function checkRoblox() {
+    const status = document.getElementById("robloxStatus
