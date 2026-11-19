@@ -1,178 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#09090f">
-<meta name="description" content="Delta AI Roblox compatibility assistant.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09090f">
+  <meta name="description" content="Delta AI - Your Roblox AI assistant.">
+  <title>Delta AI</title>
+  <link rel="manifest" href="./manifest.json">
 
-<link rel="manifest" href="./manifest.json">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<title>Delta AI</title>
+    body {
+      margin: 0;
+      background: #09090f;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    }
 
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    header {
+      padding: 22px;
+      border-bottom: 1px solid #242433;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-body {
-    background: #09090f;
-    color: white;
-    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-    min-height: 100vh;
-}
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      color: #a78bfa;
+    }
 
-header {
-    padding: 22px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #292939;
-}
+    .badge {
+      background: #182d24;
+      color: #5cf2a5;
+      padding: 7px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
 
-.logo {
-    font-size: 25px;
-    font-weight: 900;
-    color: #a66cff;
-}
+    main {
+      max-width: 700px;
+      margin: auto;
+      padding: 22px;
+    }
 
-.badge {
-    background: #211536;
-    color: #bc91ff;
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-}
+    .hero {
+      background: linear-gradient(135deg, #24164b, #111124);
+      border: 1px solid #49317c;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
 
-main {
-    max-width: 650px;
-    margin: auto;
-    padding: 20px;
-}
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+    }
 
-.hero {
-    text-align: center;
-    padding: 40px 10px;
-}
+    .hero p {
+      color: #c8c1df;
+      line-height: 1.5;
+    }
 
-.hero h1 {
-    font-size: 38px;
-    margin-bottom: 12px;
-}
+    .card {
+      background: #13131e;
+      border: 1px solid #29293b;
+      border-radius: 17px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
 
-.hero span {
-    color: #a66cff;
-}
+    .card h2 {
+      margin-top: 0;
+      font-size: 19px;
+    }
 
-.hero p {
-    color: #9999aa;
-    line-height: 1.7;
-}
+    .status {
+      color: #aaa9bc;
+      font-size: 14px;
+    }
 
-.card {
-    background: #12121c;
-    border: 1px solid #272738;
-    border-radius: 17px;
-    padding: 21px;
-    margin-bottom: 17px;
-}
+    .chat-box {
+      height: 310px;
+      overflow-y: auto;
+      background: #09090f;
+      border: 1px solid #29293b;
+      border-radius: 12px;
+      padding: 13px;
+      margin-bottom: 13px;
+    }
 
-.card h2 {
-    font-size: 18px;
-    margin-bottom: 12px;
-}
+    .message {
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 14px;
+    }
 
-.description {
-    color: #9999aa;
-    font-size: 14px;
-    line-height: 1.7;
-}
+    .user {
+      background: #30205a;
+      margin-left: 25px;
+    }
 
-.status {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    .ai {
+      background: #1c1c2a;
+      margin-right: 25px;
+    }
 
-.online {
-    color: #69e6a0;
-    font-size: 13px;
-}
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
 
-button {
-    width: 100%;
-    padding: 15px;
-    margin-top: 15px;
-    border: none;
-    border-radius: 11px;
-    background: #9455ef;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-}
+    input {
+      flex: 1;
+      min-width: 0;
+      background: #09090f;
+      color: white;
+      border: 1px solid #39394c;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 15px;
+      outline: none;
+    }
 
-input {
-    width: 100%;
-    background: #09090f;
-    border: 1px solid #343447;
-    border-radius: 10px;
-    padding: 14px;
-    color: white;
-    margin-top: 12px;
-}
+    button {
+      background: #8055e8;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-.chat {
-    min-height: 65px;
-    padding: 13px;
-    background: #09090f;
-    border-radius: 10px;
-    margin-top: 12px;
-    color: #c5c5d5;
-    font-size: 14px;
-    line-height: 1.7;
-    white-space: pre-wrap;
-}
+    button:disabled {
+      opacity: 0.5;
+    }
 
-footer {
-    text-align: center;
-    color: #666678;
-    padding: 30px;
-    font-size: 12px;
-}
-</style>
+    .small-button {
+      margin-top: 12px;
+      background: #29213f;
+      border: 1px solid #59418b;
+    }
+
+    footer {
+      text-align: center;
+      color: #77778b;
+      padding: 25px;
+      font-size: 12px;
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
-    <div class="logo">DELTA AI</div>
-    <div class="badge">KEYLESS</div>
+  <div class="logo">DELTA AI</div>
+  <div class="badge">● ONLINE</div>
 </header>
 
 <main>
 
-<section class="hero">
-    <h1>Welcome to <span>Delta AI</span></h1>
-    <p>Your Roblox compatibility assistant.<br>
-    Smarter monitoring. Easier updates.</p>
-</section>
+  <section class="hero">
+    <h1>Welcome to Delta AI</h1>
+    <p>Your Roblox assistant. Ask questions, learn scripting, and get help understanding Roblox updates.</p>
+  </section>
 
-<section class="card">
-    <div class="status">
-        <h2>Roblox Status</h2>
-        <span class="online" id="robloxStatus">Checking...</span>
+  <section class="card">
+    <h2>🤖 Delta AI Assistant</h2>
+    <div class="chat-box" id="chat">
+      <div class="message ai">
+        Hey! I'm Delta AI. Ask me anything about Roblox, Lua scripting, or game development!
+      </div>
     </div>
-    <p class="description">
-        Monitor Roblox service availability.
-    </p>
-    <button onclick="checkRoblox()">Check Roblox</button>
-</section>
 
-<section class="card">
-    <h2>Automatic Update Monitor</h2>
-    <p class="description">
-        Monitor application versions and detect when
-        a new
+    <div class="input-row">
+      <input id="message" type="text" placeholder="Ask Delta AI..." autocomplete="off">
+      <button id="send" onclick="sendMessage()">Send</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>🎮 Roblox Service Status</h2>
+    <p class="status" id="robloxStatus">Checking Roblox services...</p>
+    <button class="small-button" onclick="checkRoblox()">Refresh Status</button>
+  </section>
+
+  <section class="card">
+    <h2>🔄 Delta AI Updates</h2>
+    <p class="status" id="updateStatus">Checking application...</p>
+    <button class="small-button" onclick="checkUpdates()">Check for Updates</button>
+  </section>
+
+</main>
+
+<footer>
+  Delta AI · Independent Roblox assistant
+</footer>
+
+<script>
+  const WORKER_URL =
+    "https://delta-ai-assistant-2026.whoisyyoouu.workers.dev";
+
+  const chat = document.getElementById("chat");
+  const input = document.getElementById("message");
+  const sendButton = document.getElementById("send");
+
+  function addMessage(text, type) {
+    const message = document.createElement("div");
+    message.className = "message " + type;
+    message.textContent = text;
+    chat.appendChild(message);
+    chat.scrollTop = chat.scrollHeight;
+    return message;
+  }
+
+  async function sendMessage() {
+    const text = input.value.trim();
+
+    if (!text || sendButton.disabled) return;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    sendButton.disabled = true;
+    sendButton.textContent = "...";
+
+    const loading = addMessage("Delta AI is thinking...", "ai");
+
+    try {
+      const response = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: text
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "AI request failed.");
+      }
+
+      loading.textContent = data.reply || "I couldn't generate a response.";
+
+    } catch (error) {
+      loading.textContent = "Error: " + error.message;
+    }
+
+    sendButton.disabled = false;
+    sendButton.textContent = "Send";
+    input.focus();
+  }
+
+  input.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  });
+
+  async function checkRoblox() {
+    const status = document.getElementById("robloxStatus");
+    status.textContent = "Checking Roblox services...";
+
+    try {
+      const response = await fetch(
+        "https://status.roblox.com/api/v2/status.json"
+      );
+
+      if (!response.ok) throw new Error("Status unavailable");
+
+      const data = await response.json();
+      const indicator = data.status?.indicator;
+
+      if (indicator === "none") {
+        status.textContent = "🟢 Roblox services are operational.";
+      } else {
+        status.textContent =
+          "🟠 Roblox reports an issue: " +
+          (data.status?.description || "Check Roblox status.");
+      }
+
+    } catch (error) {
+      status.textContent = "Unable to retrieve Roblox status right now.";
+    }
+  }
+
+  async function checkUpdates() {
+    const status = document.getElementById("updateStatus");
+    status.textContent = "Checking application updates...";
+
+    try {
+      const registration = await navigator.serviceWorker.getRegistration();
+
+      if (registration) {
+        await registration.update();
+        status.textContent =
+          "Update check complete. Refresh if a new version was published.";
+      } else {
+        status.textContent =
+          "App is running. No service worker is registered yet.";
+      }
+
+    } catch (error) {
+      status.textContent = "Unable to check for updates.";
+    }
+  }
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js")
+      .catch(error => console.log("Service worker error:", error));
+  }
+
+  checkRoblox();
+  checkUpdates();
+</script>
+
+</body>
+</html>
