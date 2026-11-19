@@ -1,0 +1,15 @@
+{
+  "name": "Delta AI",
+  "short_name": "Delta AI",
+  "description": "Your Roblox compatibility and update monitoring assistant.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#09090f",
+  "theme_color": "#09090f",
+  "categories": [
+    "utilities",
+    "productivity"
+  ]
+}
