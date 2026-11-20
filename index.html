@@ -20,7 +20,7 @@ main{max-width:750px;margin:auto;padding:20px}
 .hero p{color:#c8c1df;line-height:1.5}
 .card{background:#13131e;border:1px solid #29293b;border-radius:17px;padding:19px;margin-bottom:18px}
 .card h2{margin-top:0;font-size:19px}
-.status{color:#aaa9bc;font-size:14px;line-height:1.6}
+.status{color:#aaa9bc;font-size:14px;line-height:1.6;white-space:pre-line}
 button{background:#8055e8;color:white;border:0;border-radius:10px;padding:13px 17px;font-weight:bold;cursor:pointer}
 button:disabled{opacity:.5}
 .small{background:#29213f;border:1px solid #59418b;margin-top:10px}
@@ -32,6 +32,7 @@ input{flex:1;min-width:0;background:#09090f;color:white;border:1px solid #39394c
 .row{display:flex;gap:8px}
 .update{padding:12px;background:#1c1c2a;border-radius:10px;margin-top:10px}
 .update a{color:#b9a0ff;text-decoration:none}
+#updateButton{display:none;background:#16a36a;margin-top:12px}
 footer{text-align:center;color:#77778b;padding:25px;font-size:12px}
 </style>
 </head>
@@ -72,6 +73,7 @@ footer{text-align:center;color:#77778b;padding:25px;font-size:12px}
 <h2>🔄 Delta-Ai Updates</h2>
 <p class="status" id="appUpdateStatus">Checking application version...</p>
 <button class="small" onclick="checkAppUpdates()">Check App Updates</button>
+<button id="updateButton" onclick="updateApp()">Update Now</button>
 </section>
 
 </main>
@@ -83,168 +85,244 @@ const WORKER="https://delta-ai-assistant-2026.whoisyyoouu.workers.dev";
 const APP_VERSION="1.1.0";
 
 let latestReport=null;
+let latestVersion=null;
 
 const chat=document.getElementById("chat");
 const input=document.getElementById("message");
 const sendButton=document.getElementById("send");
 
 function addMessage(text,type){
- const box=document.createElement("div");
- box.className="message "+type;
- box.textContent=text;
- chat.appendChild(box);
- chat.scrollTop=chat.scrollHeight;
- return box;
+  const box=document.createElement("div");
+  box.className="message "+type;
+  box.textContent=text;
+  chat.appendChild(box);
+  chat.scrollTop=chat.scrollHeight;
+  return box;
 }
 
 async function scanRoblox(){
- const status=document.getElementById("scanStatus");
- const output=document.getElementById("robloxData");
- const button=document.getElementById("scanButton");
+  const status=document.getElementById("scanStatus");
+  const output=document.getElementById("robloxData");
+  const button=document.getElementById("scanButton");
 
- button.disabled=true;
- status.textContent="Scanning Roblox services and public updates...";
- output.innerHTML="";
+  button.disabled=true;
+  status.textContent="Scanning Roblox services and public updates...";
+  output.innerHTML="";
 
- try{
-  const response=await fetch(WORKER+"/scan");
-  const data=await response.json();
+  try{
+    const response=await fetch(WORKER+"/scan");
+    const data=await response.json();
 
-  if(!response.ok) throw new Error(data.error||"Scan failed");
+    if(!response.ok) throw new Error(data.error||"Scan failed");
 
-  latestReport=data;
+    latestReport=data;
 
-  const indicator=data.status?.indicator||"unknown";
-  const description=data.status?.description||"Unknown";
+    const indicator=data.status?.indicator||"unknown";
+    const description=data.status?.description||"Unknown";
 
-  status.textContent=
-   "Last scan: "+new Date(data.scannedAt).toLocaleString();
+    status.textContent="Last scan: "+new Date(data.scannedAt).toLocaleString();
 
-  const health=document.createElement("div");
-  health.className="update";
-  health.textContent=
-   (indicator==="none"?"🟢 ": "🟠 ")+
-   "Roblox Status: "+description;
-  output.appendChild(health);
+    const health=document.createElement("div");
+    health.className="update";
+    health.textContent=(indicator==="none"?"🟢 ":"🟠 ")+"Roblox Status: "+description;
+    output.appendChild(health);
 
-  const heading=document.createElement("h3");
-  heading.textContent="Recent Roblox announcements";
-  output.appendChild(heading);
+    const heading=document.createElement("h3");
+    heading.textContent="Recent Roblox announcements";
+    output.appendChild(heading);
 
-  if(!data.updates||data.updates.length===0){
-   const empty=document.createElement("p");
-   empty.className="status";
-   empty.textContent="No announcements were returned by the source.";
-   output.appendChild(empty);
-  }else{
-   data.updates.forEach(item=>{
-    const card=document.createElement("div");
-    card.className="update";
+    if(!data.updates||data.updates.length===0){
+      const empty=document.createElement("p");
+      empty.className="status";
+      empty.textContent="No announcements were returned by the source.";
+      output.appendChild(empty);
+    }else{
+      data.updates.forEach(item=>{
+        const card=document.createElement("div");
+        card.className="update";
 
-    const title=document.createElement("a");
-    title.href=item.url;
-    title.target="_blank";
-    title.rel="noopener noreferrer";
-    title.textContent=item.title;
+        const title=document.createElement("a");
+        title.href=item.url;
+        title.target="_blank";
+        title.rel="noopener noreferrer";
+        title.textContent=item.title;
 
-    const date=document.createElement("p");
-    date.className="status";
-    date.textContent="Published: "+
-      (item.date?new Date(item.date).toLocaleString():"Unknown");
+        const date=document.createElement("p");
+        date.className="status";
+        date.textContent="Published: "+
+          (item.date?new Date(item.date).toLocaleString():"Unknown");
 
-    card.appendChild(title);
-    card.appendChild(date);
-    output.appendChild(card);
-   });
+        card.appendChild(title);
+        card.appendChild(date);
+        output.appendChild(card);
+      });
+    }
+
+    const analyze=document.createElement("button");
+    analyze.className="small";
+    analyze.textContent="Ask Delta AI to Analyze Scan";
+    analyze.onclick=()=>sendToAI(
+      "Analyze the latest Roblox scan. Explain the service status and summarize the announcements. Identify what is confirmed and what is uncertain."
+    );
+    output.appendChild(analyze);
+
+  }catch(error){
+    status.textContent="Scanner error: "+error.message;
+  }finally{
+    button.disabled=false;
   }
-
-  const analyze=document.createElement("button");
-  analyze.className="small";
-  analyze.textContent="Ask Delta AI to Analyze Scan";
-  analyze.onclick=()=>sendToAI(
-   "Analyze the latest Roblox scan. Explain the service status and summarize the announcements. Identify what is confirmed and what is uncertain."
-  );
-  output.appendChild(analyze);
-
- }catch(error){
-  status.textContent="Scanner error: "+error.message;
- }finally{
-  button.disabled=false;
- }
 }
 
 async function sendToAI(question){
- const loading=addMessage("Delta AI is analyzing...", "ai");
+  const loading=addMessage("Delta AI is analyzing...","ai");
+  sendButton.disabled=true;
 
- sendButton.disabled=true;
+  try{
+    const response=await fetch(WORKER,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        message:question,
+        context:latestReport?
+          JSON.stringify(latestReport):
+          "No Roblox scan has been completed yet."
+      })
+    });
 
- try{
-  const response=await fetch(WORKER,{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({
-    message:question,
-    context:latestReport?
-      JSON.stringify(latestReport):
-      "No Roblox scan has been completed yet."
-   })
-  });
+    const data=await response.json();
 
-  const data=await response.json();
+    if(!response.ok) throw new Error(data.error||"AI request failed");
 
-  if(!response.ok)throw new Error(data.error||"AI request failed");
+    loading.textContent=data.reply||"No response generated.";
 
-  loading.textContent=data.reply||"No response generated.";
-
- }catch(error){
-  loading.textContent="AI Error: "+error.message;
- }finally{
-  sendButton.disabled=false;
- }
+  }catch(error){
+    loading.textContent="AI Error: "+error.message;
+  }finally{
+    sendButton.disabled=false;
+  }
 }
 
 async function sendMessage(){
- const question=input.value.trim();
- if(!question||sendButton.disabled)return;
+  const question=input.value.trim();
 
- addMessage(question,"user");
- input.value="";
- await sendToAI(question);
+  if(!question||sendButton.disabled)return;
+
+  addMessage(question,"user");
+  input.value="";
+
+  await sendToAI(question);
 }
 
 input.addEventListener("keydown",event=>{
- if(event.key==="Enter")sendMessage();
+  if(event.key==="Enter")sendMessage();
 });
 
+function compareVersions(a,b){
+  const first=String(a).split(".").map(Number);
+  const second=String(b).split(".").map(Number);
+
+  for(let i=0;i<Math.max(first.length,second.length);i++){
+    const x=first[i]||0;
+    const y=second[i]||0;
+
+    if(x>y)return 1;
+    if(x<y)return -1;
+  }
+
+  return 0;
+}
+
 async function checkAppUpdates(){
- const status=document.getElementById("appUpdateStatus");
- status.textContent="Checking GitHub for a newer Delta-Ai release...";
+  const status=document.getElementById("appUpdateStatus");
+  const button=document.getElementById("updateButton");
 
- try{
-  const response=await fetch(
-   "https://api.github.com/repos/Jay-The-Goat/Delta-Ai/commits/main"
-  );
+  button.style.display="none";
+  status.textContent="Checking GitHub for updates...";
 
-  if(!response.ok)throw new Error("GitHub update check unavailable");
+  try{
+    const response=await fetch(
+      "./version.json?check="+Date.now(),
+      {cache:"no-store"}
+    );
 
-  const data=await response.json();
+    if(!response.ok)throw new Error("Could not retrieve version information.");
 
-  status.textContent=
-   "Installed version: "+APP_VERSION+
-   "\nLatest repository commit: "+
-   data.sha.substring(0,7)+
-   "\nLast changed: "+
-   new Date(data.commit.committer.date).toLocaleString()+
-   "\n\nA newer commit is not necessarily a new app release. Review changes before updating.";
+    const data=await response.json();
 
- }catch(error){
-  status.textContent="Update check error: "+error.message;
- }
+    if(!data.version)throw new Error("Version information is invalid.");
+
+    latestVersion=data;
+
+    const comparison=compareVersions(data.version,APP_VERSION);
+
+    if(comparison>0){
+      status.textContent=
+        "⚠️ Update available!\n"+
+        "Installed version: "+APP_VERSION+
+        "\nLatest version: "+data.version+
+        "\n\nWhat's new: "+(data.releaseNotes||"New improvements.");
+
+      button.style.display="inline-block";
+
+    }else{
+      status.textContent=
+        "✅ Delta AI is up to date!\n"+
+        "Installed version: "+APP_VERSION+
+        "\nLatest version: "+data.version;
+    }
+
+  }catch(error){
+    status.textContent="Update check error: "+error.message;
+  }
+}
+
+async function updateApp(){
+  const status=document.getElementById("appUpdateStatus");
+  const button=document.getElementById("updateButton");
+
+  button.disabled=true;
+  status.textContent="Preparing your Delta AI update...";
+
+  try{
+    if("serviceWorker" in navigator){
+      const registration=await navigator.serviceWorker.getRegistration();
+
+      if(registration){
+        await registration.update();
+
+        if(registration.waiting){
+          registration.waiting.postMessage({type:"SKIP_WAITING"});
+        }
+      }
+    }
+
+    status.textContent="Refreshing Delta AI with the latest files...";
+
+    setTimeout(()=>{
+      const url=new URL(window.location.href);
+      url.searchParams.set("updated",Date.now());
+      window.location.replace(url.toString());
+    },1200);
+
+  }catch(error){
+    status.textContent="Update failed: "+error.message;
+    button.disabled=false;
+  }
 }
 
 if("serviceWorker" in navigator){
- navigator.serviceWorker.register("./sw.js")
-  .catch(error=>console.log(error));
+  navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"})
+    .then(registration=>{
+      registration.update().catch(()=>{});
+    })
+    .catch(error=>console.log("Service worker:",error));
+
+  let refreshing=false;
+
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{
+    if(refreshing)return;
+    refreshing=true;
+  });
 }
 
 scanRoblox();
